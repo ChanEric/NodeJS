@@ -1,0 +1,132 @@
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="./jquery-shake-master/jquery.ui.shake.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+<script src="http://mymaplist.com/js/vendor/TweenLite.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.13.2/TweenLite.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.13.2/plugins/CSSPlugin.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script type="text/javascript">
+
+function shakeIt(){
+        $('#champ').effect("shake", { times:5, distance:8 }, 50);
+    }
+
+
+function surligne(champ, erreur)
+{
+   if(erreur)
+      champ.style.backgroundColor = "#fba";
+   else
+      champ.style.backgroundColor = "#64FE2E";
+}
+
+
+function verifMail(champ)
+{
+   var regex = /^[a-zA-Z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/;
+   if(!regex.test(champ.value))
+   {
+      $("#email").effect("shake");
+      surligne(champ, true);
+      return false;
+   }
+   else
+   {
+      surligne(champ, false);
+      return true;
+   
+    }
+}
+
+function verifPassConfirm(champ)
+{
+   if(champ.value.length < 3 || champ.value.length > 20)
+   {
+    $("#confirm").effect("shake");
+      surligne(champ, true);
+      return false;
+   }
+   else
+   {
+      surligne(champ, false);
+      return true;
+   }
+}
+
+
+function verifForm(f)
+{  
+   var mailOk = verifMail(f.email);
+   var mdpOk = verifPass(f.password);
+   
+   if(mailOk && mdpOk)
+      return true;
+    else{
+      return false;
+    }
+}
+
+
+</script>
+
+
+
+<div class="row list">
+	<div class="container">
+		<div class="row main">
+			<div class="col-md-8 col-md-offset-2">
+				<div class="list-group row designRow">
+		            <p class="list-group-item active toDoList">
+		              REGISTER
+		            </p> 
+					<div class="main-login main-center">
+						<div style="color:d1282d; font-weight:bold; text-align:center;" class="col-md-6 col-md-offset-3"><%= error %></div>
+						<form  method="post" action="/register" onsubmit="return verifForm(this)">							
+							 <div class="form-group col-md-8 col-md-offset-2">
+								<label for="name" class="cols-sm-2 control-label">Your Name</label>
+								<div class="cols-md-10">
+									<div class="input-group">
+										<span class="input-group-addon iconDesign"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+										<input type="text" class="form-control" name="name" id="name"  placeholder="Enter your Name"/>
+									</div>
+								</div>
+							 </div>
+							 <div class="form-group col-md-8 col-md-offset-2">
+								<label for="email" class="cols-sm-2 control-label">Your Email</label>
+								<div class="cols-md-10">
+									<div class="input-group">
+										<span class="input-group-addon iconDesign"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
+										<input type="text" class="form-control" name="email" id="email"  placeholder="Enter your Email" onblur="verifMail(this)"/>
+									</div>
+								</div>
+							 </div>
+							 <div class="form-group col-md-8 col-md-offset-2">
+								<label for="username" class="cols-sm-2 control-label">Username</label>
+								<div class="cols-md-10">
+									<div class="input-group">
+										<span class="input-group-addon iconDesign"><i class="fa fa-users fa" aria-hidden="true"></i></span>
+										<input type="text" class="form-control" name="username" id="username"  placeholder="Enter your Username"/>
+									</div>
+								</div>
+							 </div>
+							 <div class="form-group col-md-8 col-md-offset-2">
+								<label for="password" class="cols-sm-2 control-label">Password</label>
+								<div class="cols-md-10">
+									<div class="input-group">
+										<span class="input-group-addon iconDesign"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+										<input type="password" class="form-control" name="password" id="password"  placeholder="Enter your Password"/>
+									</div>
+								</div>
+							 </div>
+							 
+							 <div class="form-group col-md-8 col-md-offset-2">
+								<input type="submit" class="btn btn-primary btn-lg btn-block login-button colorButton" value="Register"/>
+							 </div>
+							 
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

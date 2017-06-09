@@ -1,0 +1,25 @@
+{
+  "name": "todolist",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon -e js/ejs ./bin/www --watch ./ "
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "ejs": "^2.5.6",
+    "ejs-locals": "^1.0.2",
+    "express": "~4.15.2",
+    "express-session": "^1.15.3",
+    "jade": "~1.11.0",
+    "jsdom": "^11.0.0",
+    "mongoose": "^4.10.2",
+    "morgan": "~1.8.1",
+    "nodemon": "^1.11.0",
+    "serve-favicon": "~2.4.2",
+    "socket.io": "^2.0.2"
+  }
+}

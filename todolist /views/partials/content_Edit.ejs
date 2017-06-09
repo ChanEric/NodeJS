@@ -1,0 +1,84 @@
+<div class="row list">
+	<div class="container">
+		<div class="col-md-6 col-md-offset-3 formCreateList">
+			<form action="/update/<%= task._id %>" method="post" accept-charset="utf-8">
+				<div class="row createList dateSelect">
+					<select classe="state" name="state">
+					<% for(var i=0; i < states.length; i++) {
+							if(selected == states[i]) {%>
+								<option selected><%= states[i] %></option>
+						  <%}
+							else {%> 
+								<option ><%= states[i] %></option>
+						  <%}
+						}%>
+					</select>
+					<!-- QRT -->
+					<select name="day" class="day">
+					<% for(var i=0; i <= 31; i++) {
+							if(task.day == i) {%>
+								<option selected><%= i %></option>
+						  <%}
+							else {%> 
+								<option ><%= i %></option>
+						  <%}
+						}%>
+					</select>
+
+					- <select name="month" class="month">
+					<% for(var i=0; i <= 12; i++) {
+							if(task.month == i) {%>
+								<option selected><%= i %></option>
+						  <%}
+							else {%> 
+								<option ><%= i %></option>
+						  <%}
+						}%>
+					</select>
+
+					- <select name="year" class="year">
+					<% for(var i = 2017; i <= 2050; i++) {
+							if(task.year == i ) {%>
+								<option selected><%= i %></option>
+						  <%}
+							else {%> 
+								<option ><%= i %></option>
+						  <%}
+						}%>
+					</select>
+
+					| <select name="hour" class="hour">
+					<% for(var i=0; i<= 24; i++) {
+							if(task.hour == i) {%>
+								<option selected><%= i %></option>
+						  <%}
+							else {%> 
+								<option ><%= i %></option>
+						  <%}
+						}%>
+					</select>
+
+					: <select name="minute" class="minute">
+					<% for(var i=0; i <= 60; i++) {
+							if(task.minute == i) {%>
+								<option selected><%= i %></option>
+						  <%}
+							else {%> 
+								<option ><%= i %></option>
+						  <%}
+						}%>
+					</select>
+					
+				</div>
+				
+				<div class="row createList">
+					<input type="text" class="titleList" name="title" value="<%= task.title %>">
+				</div>
+				<div class="row createList">
+					<textarea name="content"><%= task.content %></textarea>
+				</div>
+				<input type="submit" class="btn btn-primary btn-block colorButton" value="Save"/>
+			</form>
+		</div>
+	</div>
+</div>

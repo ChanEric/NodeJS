@@ -1,0 +1,317 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('todolist:server');
+var http = require('http');
+
+//chat variables (tmr)
+//users array
+var users = Array();
+var botSpeakModel = "[Z.] : ";
+var secret = "izi";
+var mode = "normal";
+
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors 
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  console.log('Listening on ' + bind);
+}
+
+io.on('connection', function (socket) {
+//Connexion au socket
+    console.log('someone connected');
+socket.on('user-login', function (user) {
+      var loggedUser;
+      socket.activity = 'chat';
+      var username = user.username;
+      if(CanISendThisMessage(username) == false){
+        user.username = "Gay Dev";
+      };
+      loggedUser = user;
+      loggedUser.color = GiveMeRandomColor();
+      loggedUser.id = socket.id;
+      if(loggedUser.password == secret){
+        loggedUser.rank = 'admin';
+        loggedUser.username = '~~' + loggedUser.username;
+      }else{
+        loggedUser.rank = 'user';
+      }
+      users.push({ id: loggedUser.id, username: loggedUser.username, color: loggedUser.color });
+      console.log(botSpeakModel + loggedUser.username + ' joined the chat, added him in the users\'s list.');
+      console.log(botSpeakModel + users.length + " user(s) online ! ");
+      for(var i = 0; i < users.length; i++){
+        if(users[i].id != loggedUser.id)
+        socket.emit('user_connected', users[i]);
+      }
+      io.emit('user_connected', loggedUser);
+
+
+
+    socket.on('disconnect', function () {
+    
+        var disconnectedUser;
+        for(var i = 0; i<users.length; i++){
+          if(users[i].id == socket.id){
+            disconnectedUser = users[i];
+            io.emit('user_disconnected', disconnectedUser);
+            users.splice(i, 1);
+            console.log(botSpeakModel + disconnectedUser.username + ' disconnected, therefor I removed him from the connected list.');
+          } 
+        }
+      });
+
+    socket.on('chat-message', function (message) {
+
+      if(CanISendThisMessage(message.text) == false){
+        message.text = "[Deleted message] you can't use inputs here ! If you want to show an image type !show image_src";
+      }
+      
+
+      var tempMessage = message.text.split(' ');
+      switch(tempMessage[0]){
+      
+        case '!show':
+          var href = message.text.replace('!show', ' ');
+          href = '<a target="_blank" href="'+ href + '">';
+          message.text = message.text.replace('!show','<img class="imgChat" src="');
+          message.text =href + message.text + '"></a>';
+          break;
+        case '!slide':
+          if(loggedUser.rank == 'admin'){
+            var text = message.text.replace('!slide','');
+            message.text = "Abrakadabra";
+            io.emit('change_slide_text', 'Broadcast : '+text);
+          }
+          break;
+      }
+
+    console.log('message : ' + message.text);
+    message.version=2;
+    message.color = loggedUser.color;
+    message.username = loggedUser.username;
+
+    // envoie le message a tous les clients connectés
+    io.emit('chat-message', message);
+    
+    socket.broadcast.emit('play-sound-message');
+    
+  });
+
+
+  });
+
+  /**
+   * Réception de l'événement 'chat-message' et réémission vers tous les utilisateurs
+   */
+  
+
+  
+});
+
+//Chat functions
+
+//Chat
+function GiveMeRandomColor(){
+  var max = 255;
+  var min = 50;
+
+  var red = Math.floor(Math.random() * (max - min)) + min;
+  var green = Math.floor(Math.random() * (max - min)) + min;
+  var blue = Math.floor(Math.random() * (max - min)) + min;
+  var random = Math.floor(Math.random() * 2);
+  switch(random){
+    case 0 :
+      red = 0;
+      break;
+    case 1 :
+      green = 0;
+      break;
+    case 2 : 
+      blue = 0;
+      break;
+  }
+  return '('+red+','+green+','+blue+')';
+}
+
+function CanISendThisMessage(message){
+
+      var rules = Array('!doctype',
+                        '<!--',
+                        '<applet',
+                        '<area',
+                        '<b',
+                        '<base',
+                        '<basefont',
+                        '<bdo',
+                        '<bgsound',
+                        '<body',
+                        '<button',
+                        '<center',
+                        '<code',
+                        '<col',
+                        '<colgroup',
+                        '<dd',
+                        '<del',
+                        '<dfn',
+                        '<dir',
+                        '<div',
+                        '<dl',
+                        '<dt',
+                        '<embed',
+                        '<fieldset',
+                        '<font',
+                        '<form',
+                        '<frame',
+                        '<frameset',
+                        '<head',
+                        '<hr',
+                        '<html',
+                        '<iframe',
+                        '<img',
+                        '<input',
+                        '<ins',
+                        '<isindex',
+                        '<label',
+                        '<layer',
+                        '<legend',
+                        '<li',
+                        '<link',
+                        '<map',
+                        '<marquee',
+                        '<menu',
+                        '<meta',
+                        '<nextid',
+                        '<nobr',
+                        '<noembed',
+                        '<noscript',
+                        '<object',
+                        '<ol',
+                        '<option',
+                        '<p',
+                        '<param',
+                        '<pre',
+                        '<q',
+                        '<s',
+                        '<samp',
+                        '<script',
+                        '<select',
+                        '<small',
+                        '<span',
+                        '<strike',
+                        '<strong',
+                        '<style',
+                        '<sub',
+                        '<sup',
+                        '<table',
+                        '<tbody',
+                        '<td',
+                        '<textarea',
+                        '<tfoot',
+                        '<th',
+                        '<thead',
+                        '<title',
+                        '<tr',
+                        '<tt',
+                        '<u',
+                        '<ul',
+                        '<var',
+                        '<wbr',
+                        '<xmp',
+                        '~~'
+                        )
+      if(message != undefined){
+        message = message.toLowerCase();
+      }else{
+        message = "";
+      }
+      
+      for(var i = 0; i < rules.length; i++){
+        if(message.includes(rules[i])){
+          return false;
+        }
+      }
+      return true;
+
+}
+

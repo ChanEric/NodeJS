@@ -1,0 +1,129 @@
+<!-- min=<%= datenow %> /> -->
+<div class="row list">
+  <div class="container">
+    <div class="col-md-2 col-md-offset-5">
+      <button id="buttonManager" class="buttonDesign displayButton" onclick="displayForm()">+</button>
+    </div>
+
+    <div class="hideForm" id="formHideDisplay">
+
+        <h1><%= title %></h1>
+        <form action="/create" method="post" accept-charset="utf-8">
+          <label class="col-md-12">Title : </label> 
+          <input class="col-md-12" type="text" name="title" /> 
+          <label class="col-md-12">Content : </label>
+          <input class="col-md-12" type="text" name="content" /> 
+          <label class="col-md-12">Deadline : </label>
+
+          <div class="col-md-12 addSelect">
+
+					<!-- QRT -->
+					<select name="day" class="day">
+					<% for(var i=0; i <= 31; i++) {%>
+                <option ><%= i %></option>
+						<%}%>
+					</select>
+
+					- <select name="month" class="month">
+					<% for(var i=0; i <= 12; i++) {%>
+                <option ><%= i %></option>
+						<%}%>
+					</select>
+
+					- <select name="year" class="year">
+					<% for(var i = 2017; i <= 2050; i++) {%>
+                <option ><%= i %></option>
+						<%}%>
+					</select>
+
+					| <select name="hour" class="hour">
+					<% for(var i=0; i<= 24; i++) {%>
+                <option ><%= i %></option>
+						<%}%>
+					</select>
+
+					: <select name="minute" class="minute">
+					<% for(var i=0; i <= 60; i++) {%>
+                <option ><%= i %></option>
+						<%}%>
+					</select>
+
+          </div>
+
+          <label class="col-md-12">State :</label>
+          <select class="col-md-12 form-control" name="state" style="margin-bottom:1%;">
+              <option selected>Pending</option>
+              <option>Started</option>
+              <option>Finished</option>
+          </select>
+          <input class="col-md-12 colorButton" type="submit" value="Add"/>
+        </form>
+    </div>
+
+
+    
+        <div class="col-md-12">
+            <div class="list-group row designRow">
+              <p class="list-group-item active toDoList">
+                LIST
+              </p>
+
+
+<% tasks.forEach( function( task ){ %>
+
+<% if( task.user_id == user_id ){ %>
+
+
+<!--<div class="col-md-1"><a href="/edit/<%= task._id %>" title="Update this todo item">Update</a></div>
+<div class="col-md-1"><a href="/destroy/<%= task._id %>" title="Delete this todo item">Delete</a></div>
+</div>-->
+
+              <div class="col-md-10 col-md-offset-1 displayElemList circleDesign">
+                <div class="col-md-2" style="padding-top:0.4%;">
+                <% if(task.state == "Pending") { %>
+                    <div style="width:15px;border:2px #fff solid; display:inline-block; height:15px; background-color:#d1282d; border-radius:50%;"></div>
+                 <%}
+                  else if(task.state == "Started")
+                  {%>
+                    <div style="width:15px;border:2px #fff solid; display:inline-block; height:15px; background-color:#f79627; border-radius:50%;"></div>
+                 <%}
+                 else if(task.state == "Finished") 
+                  {%>
+                   <div style="width:15px;border:2px #fff solid; display:inline-block; height:15px; background-color:#b4e510; border-radius:50%;"></div>
+                 <%}%>
+                </div>
+                <div class="col-md-2 state"><%= task.state %></div>
+
+                <div class="col-md-2 displayTitleList"><%= task.title %></div>
+                <div class="col-md-4 displayDateList"><%= task.day + " / " + task.month + " / " + task.year + " → " + task.hour + " : " + task.minute %></div>
+                <a href="/edit/<%= task._id %>" class="buttonModify col-md-1"><span class="glyphicon glyphicon-cog"></span></a>
+                <a href="/destroy/<%= task._id %>" class="buttonDelete col-md-1"><span class="glyphicon glyphicon-remove"></span></a>
+              </div>
+
+            
+      <% }%> 
+
+<% }); %>   
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  function displayForm(){
+    var elem = document.getElementById('formHideDisplay');
+    var button = document.getElementById('buttonManager');
+    if(elem.className == "hideForm"){
+      elem.className = 'addForm col-md-4 col-md-offset-4 formDesign displayForm';
+      button.className = 'buttonDesign hideButton';
+      console.log('display');
+    }
+    else{
+      elem.className = 'hideForm';
+      button.className = 'buttonDesign displayButton';
+      console.log('hide');
+    }
+  }
+</script>
+
+

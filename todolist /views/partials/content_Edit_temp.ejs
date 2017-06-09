@@ -1,0 +1,49 @@
+<div class="row list">
+    <div class="container">
+       <h1><%= title %></h1>
+<form action="/create" method="post" accept-charset="utf-8">
+  Title :  <input type="text" name="title" /> <br>
+  Content : <input type="text" name="content" /> <br>
+  Deadline : <input type="date" id ="deadline" name="deadline" min=<%= datenow %> ><br>
+  <input type="submit" value="Add"/>
+</form>
+
+<% tasks.forEach( function( task ){ %>
+<p>
+<% if( task.user_id == user_id ){ %>
+    <% if( task._id == current ){ %>
+    <form action="/update/<%= task._id %>" method="post" accept-charset="utf-8">
+        <input type="text" name="title" value="<%= task.title %>" />
+        <input type="text" name="content" value="<%= task.content %>" />
+        <input type="date" name="deadline" value="<%= task.deadline %>" min=<%= datenow %> />
+        <input type="submit" value="Submit"/>
+    </form>
+    <% }else{ %>
+      <span>
+        id_user_task : <%= task.user_id %>
+      </span>
+      <span>
+        Title : <%= task.title %>
+      </span>
+      <span>
+        Content : <%= task.content %>
+      </span>
+      <span>
+        Deadline : <%= task.deadline %>
+      </span>
+      <span>
+        Last update : <%= task.updated_at %>
+      </span>
+      <span>
+        <a href="/edit/<%= task._id %>" title="Update this todo item">Update</a>
+      </span>
+      <span>
+        <a href="/destroy/<%= task._id %>" title="Delete this todo item">Delete</a>
+      </span>    
+    <% } %> 
+<% }%> 
+
+  </p>
+<% }); %>   
+    </div>
+</div>
